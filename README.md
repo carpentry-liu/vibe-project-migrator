@@ -1,8 +1,31 @@
+<div align="center">
+
 # Vibe Project Migrator
+
+**把“AI 写了”迁移成“人类敢合并”。**
+
+[![Skill](https://img.shields.io/badge/Codex-Skill-111111?style=flat-square)](#安装)
+[![Audit](https://img.shields.io/badge/audit-read--only-2E7D32?style=flat-square)](#独立审计脚本)
+[![Dependencies](https://img.shields.io/badge/runtime-stdlib%20only-E3422F?style=flat-square)](#独立审计脚本)
+[![License](https://img.shields.io/badge/license-MIT-111111?style=flat-square)](LICENSE)
 
 把一个已有软件仓库迁移为“AI 可以快速理解、人类可以放心评审、变更可以复现验证”的工程协作体系。
 
+</div>
+
 它不是一套需要原样照搬的文档模板，也不会自动重写产品代码。技能会先只读审计目标仓库，再根据项目规模、技术栈、现有约定和风险，选择最小够用的治理层级，补齐 `AGENTS.md`、AI 协作规则、变更提案、PR/Issue 模板、验证回执和对外接受度材料。
+
+![Vibe Project Migrator 真实只读审计结果](docs/assets/vibe-project-migrator-audit.png)
+
+<p align="center"><sub>真实使用截图：仓库内审计代码扫描一个临时示例工程，识别 221 个文件、4 类技术栈和 8 条迁移线索；目标工程写入为 0。可运行 <code>python docs/demo/render_usage_demo.py</code> 复现。</sub></p>
+
+## 30 秒看懂
+
+| 输入 | Skill 做什么 | 交付什么 |
+|---|---|---|
+| 一个已有软件仓库 | 只读识别技术栈、Git 状态、现有规则、CI、文档和风险信号 | 不带“合规打分”的项目画像 |
+| “把它改造成可持续的 Vibe Coding 工程” | 选择 Baseline / Standard / Layered，按项目事实补最少够用的材料 | AI 入口、评审证据、变更提案、验证与回滚约定 |
+| “团队为什么要接受这些改动” | 把速度、风险和人工复核边界写成人能审查的说明 | 迁移回执、未采用项、真实命令与人工待办 |
 
 ## 为什么需要这个 Skill
 
