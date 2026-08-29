@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vibe Project Migrator"
+  short_description: "Turn repositories into reviewable AI-ready projects"
+  default_prompt: "Use $vibe-project-migrator to audit this repository and migrate its AI collaboration workflow without changing product behavior."

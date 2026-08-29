@@ -1,0 +1,12 @@
+[project]
+name = "vibe-project-migrator"
+version = "0.1.0"
+description = "A Codex skill for migrating repositories to evidence-driven AI collaboration workflows."
+requires-python = ">=3.10"
+license = "MIT"
+
+[project.urls]
+Repository = "https://github.com/carpentry-liu/vibe-project-migrator"
+
+[tool.unittest]
+start-directory = "tests"
