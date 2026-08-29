@@ -1,6 +1,6 @@
 ---
 name: vibe-project-migrator
-description: Audit and migrate an existing software repository into a project-adapted, evidence-driven AI collaboration workflow with AGENTS.md guidance, authoritative docs, risk-tiered change records, review templates, and verification receipts. Use when asked to introduce, standardize, or improve vibe coding or AI governance across a repository. Do not use for ordinary feature work that does not change collaboration practices.
+description: 审计现有软件仓库，并迁移为适配项目、证据驱动的 AI 协作工程，补齐 AGENTS.md、权威文档、风险分级变更记录、审查模板和验证回执；适用于引入或规范 Vibe Coding 与 AI 治理，不用于不改变协作方式的普通功能开发。
 ---
 
 # Vibe Project Migrator
