@@ -9,7 +9,7 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT / "scripts"))
 
-from audit_project import audit_project  # noqa: E402
+from compare_fixture import audit_with_snapshot  # noqa: E402
 
 
 def build_example_repository(root: Path) -> None:
@@ -38,14 +38,14 @@ def build_example_repository(root: Path) -> None:
             destination.write_text(contents, encoding="utf-8")
 
 
-def render_report(report: dict[str, object]) -> str:
+def render_report(report: dict[str, object], audit_integrity: dict[str, object]) -> str:
     scan = report["scan"]
     candidates = report["migration_candidates"]
     technologies = report["technologies"]
-    profile = "Standard + Layered review" if "review-layered-instructions" in report["profile_hints"] else "Baseline"
+    profile = "Standard + 分层复核" if "review-layered-instructions" in report["profile_hints"] else "Baseline（基础）"
     chips = "".join(f"<span>{html.escape(item)}</span>" for item in technologies)
     candidate_rows = "".join(
-        f"<li><b>{index:02d}</b><span>{html.escape(candidate['code'])}</span><i>REVIEW</i></li>"
+        f"<li><b>{index:02d}</b><span>{html.escape(candidate['code'])}</span><i>待复核</i></li>"
         for index, candidate in enumerate(candidates[:6], start=1)
     )
     return f"""<!doctype html>
@@ -53,7 +53,7 @@ def render_report(report: dict[str, object]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vibe Project Migrator · real audit demo</title>
+  <title>Vibe Project Migrator · 真实审计演示</title>
   <style>
     :root {{ --paper:#f3efe4; --ink:#171815; --red:#e3422f; --acid:#d9ff43; --line:#9c988d; }}
     * {{ box-sizing:border-box; }}
@@ -97,33 +97,33 @@ def render_report(report: dict[str, object]) -> str:
 <body>
 <main>
   <header>
-    <div><div class="eyebrow">VIBE PROJECT MIGRATOR / REAL RUN</div><h1>把“AI 写了”变成<br>“人类敢合并”</h1></div>
-    <div class="stamp">READ-ONLY<br>AUDIT RECEIPT</div>
+    <div><div class="eyebrow">VIBE 项目迁移助手 / 真实运行</div><h1>把“AI 写了”变成<br>“人类敢合并”</h1></div>
+    <div class="stamp">只读审计<br>运行回执</div>
   </header>
   <section class="grid">
     <div>
       <div class="terminal"><div class="dots">● ● ●</div><code>$ python scripts/audit_project.py \\
   --root example-agent-app --format json
 
-<em>✓ inventory complete</em>
-  target writes : 0
-  files inspected: {scan['files_seen']}
-  profile hint  : {html.escape(profile)}</code></div>
-      <h2>Detected stack</h2><div class="chips">{chips}</div>
-      <h2>Evidence, not vibes</h2>
+<em>✓ 仓库画像完成</em>
+  审计前后快照：{'一致' if audit_integrity['unchanged'] else '检测到变化'}
+  已检查文件：{scan['files_seen']}
+  层级线索：{html.escape(profile)}</code></div>
+      <h2>识别到的技术栈</h2><div class="chips">{chips}</div>
+      <h2>展示证据，而非信心</h2>
       <div class="metrics">
-        <div class="metric"><strong>{scan['files_seen']}</strong><small>files read</small></div>
-        <div class="metric"><strong>{len(technologies)}</strong><small>stacks</small></div>
-        <div class="metric"><strong>{len(candidates)}</strong><small>review leads</small></div>
+        <div class="metric"><strong>{scan['files_seen']}</strong><small>已枚举文件</small></div>
+        <div class="metric"><strong>{len(technologies)}</strong><small>技术栈</small></div>
+        <div class="metric"><strong>{len(candidates)}</strong><small>迁移线索</small></div>
       </div>
     </div>
     <div class="receipt">
-      <div class="receipt-head"><b>迁移线索</b><span>SIGNALS ≠ SCORE</span></div>
+      <div class="receipt-head"><b>迁移线索</b><span>信号 ≠ 评分</span></div>
       <ul>{candidate_rows}</ul>
-      <div class="route"><b>REPOSITORY</b><span>→</span><b>AUDIT</b><span>→</span><b>MINIMUM PROFILE</b><span>→</span><b>RECEIPT</b></div>
+      <div class="route"><b>仓库</b><span>→</span><b>审计</b><span>→</span><b>最小层级</b><span>→</span><b>回执</b></div>
     </div>
   </section>
-  <footer><span>实际调用仓库内审计代码；示例仓库在临时目录创建并在完成后销毁。</span><b>NO PRODUCT CODE CHANGED</b></footer>
+  <footer><span>实际调用仓库内审计代码；示例仓库在临时目录创建并在完成后销毁。</span><b>{'SHA-256 快照一致' if audit_integrity['unchanged'] else '检测到文件变化'}</b></footer>
 </main>
 </body>
 </html>"""
@@ -133,9 +133,9 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="vibe-migrator-readme-demo-") as directory:
         root = Path(directory) / "example-agent-app"
         build_example_repository(root)
-        report = audit_project(root)
+        report, audit_integrity = audit_with_snapshot(root)
     output = Path(__file__).with_name("readme-shot.html")
-    output.write_text(render_report(report), encoding="utf-8")
+    output.write_text(render_report(report, audit_integrity), encoding="utf-8")
     print(f"Rendered real audit receipt to {output}")
 
 

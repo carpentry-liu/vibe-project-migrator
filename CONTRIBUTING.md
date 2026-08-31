@@ -1,4 +1,4 @@
-# Contributing
+# 贡献指南
 
 欢迎提交能让迁移决策更准确、输出更轻量或验证更可靠的改进。
 
@@ -24,6 +24,6 @@ python scripts\audit_project.py --root . --format json
 使用 Conventional Commits，例如：
 
 ```text
-fix(audit): detect nested GitHub workflow files
-docs: clarify layered migration criteria
+fix(audit): 修复嵌套 GitHub workflow 识别
+docs: 说明分层迁移条件
 ```

@@ -1,5 +1,5 @@
-# Security policy
+# 安全政策
 
-The migration skill and its bundled audit script are designed to operate locally. The audit script enumerates paths and metadata but does not read repository file contents, follow symbolic links, execute target-repository scripts, or upload data.
+迁移 Skill 和随附的审计脚本只在本地运行。脚本仅枚举路径与元数据，不读取仓库文件内容、不跟随符号链接、不执行目标仓库脚本，也不上传数据。
 
-Do not include credentials, private source excerpts, internal URLs, personal identities, or sensitive absolute paths in bug reports. Report vulnerabilities privately through GitHub Security Advisories after this repository enables private vulnerability reporting.
+问题报告中不要包含凭据、私有源码片段、内部网址、个人身份或敏感绝对路径。仓库启用私密漏洞报告后，请通过 GitHub Security Advisories 私下报告漏洞。

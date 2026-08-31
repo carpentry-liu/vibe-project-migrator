@@ -1,128 +1,63 @@
-# Migration playbook
+# 迁移决策手册
 
-Use this playbook for planning or applying a repository migration. The desired outcome is not identical filenames across projects; it is a durable chain from human intent to implementation evidence.
+规划或执行迁移时使用本手册。目标不是让所有项目拥有相同文件名，而是建立从人类意图到实现证据的持久链路。
 
-## 1. Establish authority and scope
+## 1. 确认权威来源与范围
 
-Determine, in order:
+按以下顺序判断：用户当前请求和授权、适用的仓库/子树规则、已提交的架构与安全等事实、团队现有约定、填补真实缺口所需的外部来源。来源冲突时应报告冲突，不能因为某份历史材料更详细就默认其仍然权威。
 
-1. the user's current request and explicit authorization;
-2. applicable repository and subtree instructions;
-3. checked-in architecture, product, security, build, test, release, and Git facts;
-4. existing team conventions;
-5. external sources needed to fill a genuine gap.
+## 2. 先盘点再设计
 
-If sources conflict, report the conflict instead of silently choosing one. Do not make a historical document authoritative merely because it is detailed.
+在不修改工作区的前提下检查：
 
-## 2. Inventory before designing
+- Git 分支、状态、远程名称和近期提交风格；
+- 语言、构建系统、包管理器、应用、库及可部署目标；
+- README、文档索引、架构、产品、决策、安全、贡献、发布和测试指南；
+- 根级及嵌套 AI 规则；
+- CI、PR/Issue 模板、所有权规则和 hooks；
+- 配置与脚本中真实存在的命令；
+- 删除、迁移、凭据、发布、计费、生产部署或敏感数据等高风险行为。
 
-Inspect the worktree without mutating it:
+保留用户的无关未提交改动。除非任务如此要求，不要借迁移清理或格式化整个仓库。
 
-- Git branch, status, remotes, and recent commit style;
-- languages, build systems, package managers, applications, libraries, and deployable targets;
-- README, docs index, architecture, product, requirements, decisions, security, contribution, release, and testing guides;
-- root and nested AI instruction files;
-- CI workflows, PR templates, issue forms, ownership rules, and hooks;
-- commands that actually exist in manifests and scripts;
-- high-risk behaviors such as deletion, migration, credentials, network publishing, billing, production deployment, or regulated data.
+## 3. 选择层级
 
-Preserve unrelated dirty files. A migration should not clean or normalize the whole repository unless that is the task.
+### Baseline（基础）
 
-## 3. Choose a profile
+适合一个团队和主要技术栈可以共享简明规则的项目。通常只需根级 `AGENTS.md`（或已有等价物）、可执行贡献指南、AI 协作说明和要求范围/风险/证据的 PR 模板。
 
-### Baseline
+### Standard（标准）
 
-Use when one team and one main technology can share a concise rule set.
+适合经常开发、多贡献者、有用户行为或显著运营风险的项目。按实际需要增加文档索引、轻量变更提案、Issue 表单、安全报告、决策同步及 AI/人工复核说明。
 
-Typical artifacts:
+### Layered（分层）
 
-- root `AGENTS.md` or an existing equivalent;
-- contribution guide with exact validation commands;
-- AI collaboration section or document;
-- PR template that requires scope, risk, and evidence.
+仅当子树在命令、架构边界、生成文件、安全或所有权上确有差异时增加嵌套 `AGENTS.md`。子级说明父级、范围和差异，不重复根规则。
 
-### Standard
+## 4. 映射而非复制
 
-Use when the repository has regular feature work, multiple contributors, user-facing behavior, or meaningful operational risk.
+编辑前列出“需要解决的问题、已有权威来源、动作、原因”。优先扩展有效的现有材料；只有受众或权威性不同才新建文件。例如已有 RFC 模板应扩展，而不是再建一套提案系统。
 
-Add only the relevant artifacts:
+## 5. 只编码稳定规则
 
-- docs index;
-- lightweight change-proposal template;
-- issue forms for defects and features;
-- security reporting path;
-- architecture and decision update rules;
-- AI participation and human-review disclosure.
+根入口通常只保留：范围和优先级、产品目标与不可削弱边界、仓库地图和依赖方向、上下文入口、提案/人工复核条件、验证来源、Git 与外部写边界。版本号、短期模块清单、人员和历史快照应留在各自权威来源。
 
-### Layered
+## 6. 用风险分级保持可追溯
 
-Use when different subtrees have materially different commands, architecture boundaries, ownership, generated files, or safety rules. Create nested `AGENTS.md` only at those boundaries. Do not mirror every directory.
+- **L0**：文字、链接、格式和机械元数据，只需干净差异和相关检查。
+- **L1**：局部行为或工具变更，记录根因、范围、实现和测试。
+- **L2**：功能、跨模块重构、公开接口/数据格式、安全边界、破坏性或不可逆决策，需要备选、风险、回滚、分段实现和验收证据。
 
-Each nested file should state its parent, scope, local facts, and differences. Avoid repeating unchanged root rules.
+保留目标仓库已有的有效分级名称，不强行套用这些标签。
 
-## 4. Map instead of duplicate
+## 7. 让非平凡阶段可分别评审
 
-Create a migration map before editing:
+L2 工作即使记录在一个文件，也应区分：用户问题与验收标准、调研与备选、选定设计、实现偏差、验证结果与限制。AI 可以协助，但不能代替敏感操作授权或批准自己的证据。
 
-| Need | Existing authority | Action | Reason |
-|---|---|---|---|
-| AI entrypoint | `CLAUDE.md` | update and add a small `AGENTS.md` router | keep one facts source while supporting multiple agents |
-| Change design | existing RFC template | extend | avoid a second proposal system |
-| Verification | package scripts and CI | link | commands remain executable and current |
+## 8. 验证迁移
 
-Prefer updating a coherent existing artifact. Add a new file only when it has a distinct audience or authority.
+至少确认：链接可解析、模板无意外占位符、命令来自仓库配置、规则层级无冲突、评审入口要求可观察证据、未复制隐私材料、文档迁移未改变产品行为、未执行检查和人工待办可见。
 
-## 5. Encode stable rules
+## 9. 以可审查单元提交
 
-The root entrypoint should contain only facts that materially change agent decisions:
-
-- scope and precedence;
-- project purpose and non-negotiable product or safety boundaries;
-- repository map and dependency direction;
-- how to obtain context;
-- when a proposal or human review is required;
-- exact validation sources or commands;
-- Git and external-write boundaries.
-
-Keep rapidly changing module lists, versions, flags, owners, and historical snapshots in their authoritative code or docs rather than duplicating them in the entrypoint.
-
-## 6. Make non-trivial work traceable
-
-Use risk tiers rather than treating every change as a design project:
-
-- **L0**: wording, links, formatting, mechanical metadata. Require a clean diff and a relevant check.
-- **L1**: contained behavior or tooling change. Record root cause, scope, implementation, and tests.
-- **L2**: feature, cross-module refactor, public API/data format, security boundary, destructive behavior, irreversible or expensive decision. Require alternatives, risks, rollback, staged implementation, and acceptance evidence.
-
-The repository may rename or combine these tiers. Preserve an existing effective process instead of imposing the labels.
-
-## 7. Keep stages distinguishable
-
-For L2 work, make the following states separately reviewable even if they live in one document:
-
-1. user problem and acceptance criteria;
-2. research and alternatives;
-3. selected design and decision log;
-4. implementation record and deviations;
-5. verification commands, actual results, and limitations.
-
-AI may help produce every stage, but it cannot supply the missing human authorization for safety-sensitive actions or approve its own evidence on behalf of a maintainer.
-
-## 8. Validate the migration
-
-At minimum:
-
-- all referenced files and local Markdown links resolve;
-- generated templates contain no accidental placeholders;
-- build and test commands match checked-in configuration;
-- the new hierarchy has no contradictory instructions;
-- the PR and issue templates ask for observable evidence rather than future checklists;
-- project-specific secrets, internal URLs, identities, and reference-repository language were not copied;
-- documentation-only migration did not change product behavior;
-- unexecuted checks and human review are explicitly identified.
-
-## 9. Commit in reviewable units
-
-When commit authorization exists, separate governance scaffolding from unrelated product work. Use the repository's established commit convention and write a concrete subject. Never rewrite or force-push shared history merely to make the migration look clean.
-
-The final receipt should let another maintainer answer: what changed, why this profile was chosen, what evidence passed, what was deliberately omitted, and what still needs human judgment.
+获得提交授权时，将治理材料与无关产品改动分开，沿用现有提交约定。不要为了“看起来整洁”改写或强推共享历史。迁移回执应让维护者快速回答：改了什么、为何选该层级、哪些证据通过、哪些内容刻意省略、还需谁判断。

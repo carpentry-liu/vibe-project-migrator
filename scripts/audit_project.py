@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only repository inventory for the vibe-project-migrator skill."""
+"""Vibe Project Migrator 的只读仓库画像工具。"""
 
 from __future__ import annotations
 
@@ -98,6 +98,27 @@ SOURCE_SUFFIXES = {
     ".ts",
     ".tsx",
 }
+
+PROFILE_HINT_LABELS = {
+    "baseline-profile-candidate": "可考虑 Baseline（基础）层级",
+    "standard-profile-candidate": "可考虑 Standard（标准）层级",
+    "review-layered-instructions": "复核是否需要 Layered（分层）规则",
+    "review-docs-index-and-repository-map": "复核文档索引与仓库地图",
+    "human-risk-classification-required": "风险级别仍需人工判断",
+}
+
+
+def configure_utf8_stdio() -> None:
+    """Make CLI output deterministic UTF-8 without requiring shell variables."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if not callable(reconfigure):
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            # Embedded hosts and test doubles may expose a non-reconfigurable stream.
+            continue
 
 
 def relative_posix(path: Path, root: Path) -> str:
@@ -247,14 +268,14 @@ def governance_signals(paths: list[str]) -> dict[str, list[str]]:
 def migration_candidates(signals: dict[str, list[str]]) -> list[dict[str, str]]:
     candidates = []
     checks = [
-        ("ai-entrypoint", "ai_entrypoints", "Add or consolidate a repository-level AI instruction entrypoint."),
-        ("ai-collaboration", "ai_collaboration_rules", "Confirm whether human/AI roles, risk tiers, and evidence rules are already covered; document them if absent."),
-        ("contribution-guide", "contribution_guides", "Confirm and document executable contributor and validation commands."),
-        ("pull-request-evidence", "pull_request_templates", "Confirm review intake covers scope, risk, actual evidence, and AI coverage."),
-        ("change-proposal", "change_templates", "Confirm risk-bearing changes have a lightweight proposal path."),
-        ("docs-index", "docs_indexes", "Confirm whether the documentation set warrants an intent-oriented index."),
-        ("security-reporting", "security_policies", "Confirm whether a private security-reporting path is needed."),
-        ("continuous-integration", "ci_workflows", "Confirm repeatable automated validation or document why it is absent."),
+        ("ai-entrypoint", "ai_entrypoints", "新增或整合仓库级 AI 协作入口。"),
+        ("ai-collaboration", "ai_collaboration_rules", "确认是否已说明人类与 AI 的职责、风险分级和证据要求；缺失时再补充。"),
+        ("contribution-guide", "contribution_guides", "确认并记录可直接执行的贡献与验证命令。"),
+        ("pull-request-evidence", "pull_request_templates", "确认评审入口是否覆盖范围、风险、真实证据与 AI 参与范围。"),
+        ("change-proposal", "change_templates", "确认有风险的改动是否具备轻量变更提案路径。"),
+        ("docs-index", "docs_indexes", "确认现有文档规模是否需要按读者意图组织的索引。"),
+        ("security-reporting", "security_policies", "确认是否需要私密的安全问题报告渠道。"),
+        ("continuous-integration", "ci_workflows", "确认是否已有可重复的自动验证；若没有，记录原因。"),
     ]
     for code, key, recommendation in checks:
         if not signals[key]:
@@ -285,7 +306,7 @@ def profile_hints(paths: list[str], technologies: list[str], signals: dict[str, 
 def audit_project(root: Path, max_files: int = DEFAULT_MAX_FILES) -> dict[str, object]:
     resolved_root = root.expanduser().resolve()
     if not resolved_root.is_dir():
-        raise ValueError(f"Repository root is not a directory: {resolved_root}")
+        raise ValueError(f"仓库根目录不存在或不是目录：{resolved_root}")
 
     paths, truncated, excluded = inventory_files(resolved_root, max_files)
     technologies = detect_technologies(paths)
@@ -314,8 +335,8 @@ def audit_project(root: Path, max_files: int = DEFAULT_MAX_FILES) -> dict[str, o
         "profile_hints": profile_hints(paths, technologies, signals),
         "migration_candidates": migration_candidates(signals),
         "notes": [
-            "Inventory is read-only and does not establish compliance.",
-            "Confirm commands, risks, and authoritative documents from repository contents before editing.",
+            "仓库画像是只读迁移线索，不构成合规结论或评分。",
+            "编辑前仍需从仓库权威材料确认命令、风险和事实。",
         ],
     }
 
@@ -325,44 +346,45 @@ def markdown_report(report: dict[str, object]) -> str:
     repository = report["repository"]
     governance = report["governance"]
     lines = [
-        "# Repository migration inventory",
+        "# 仓库迁移画像",
         "",
-        f"- Root: `{report['root']}`",
-        f"- Files inspected: {scan['files_seen']}" + (" (truncated)" if scan["truncated"] else ""),
-        f"- Git repository: {'yes' if repository.get('is_repository') else 'no'}",
-        f"- Technologies: {', '.join(report['technologies']) or 'not detected from markers'}",
-        f"- Profile hints: {', '.join(report['profile_hints'])}",
+        f"- 根目录：`{report['root']}`",
+        f"- 已检查文件：{scan['files_seen']}" + ("（达到上限，结果已截断）" if scan["truncated"] else ""),
+        f"- Git 仓库：{'是' if repository.get('is_repository') else '否'}",
+        f"- 技术栈：{', '.join(report['technologies']) or '未从文件标记识别'}",
+        f"- 迁移层级线索：{'; '.join(PROFILE_HINT_LABELS.get(item, item) for item in report['profile_hints'])}",
         "",
-        "## Governance signals",
+        "## 协作治理信号",
         "",
     ]
     for key, matches in governance.items():
-        lines.append(f"- {key.replace('_', ' ')}: {len(matches)}")
+        lines.append(f"- `{key}`：{len(matches)}")
         for match in matches[:8]:
             lines.append(f"  - `{match}`")
         if len(matches) > 8:
-            lines.append(f"  - … {len(matches) - 8} more")
-    lines.extend(["", "## Migration candidates", ""])
+            lines.append(f"  - ……另有 {len(matches) - 8} 项")
+    lines.extend(["", "## 待确认的迁移项", ""])
     for candidate in report["migration_candidates"]:
         lines.append(f"- **{candidate['code']}**: {candidate['recommendation']}")
     if not report["migration_candidates"]:
-        lines.append("- No missing baseline signals were detected; review quality and consistency manually.")
-    lines.extend(["", "> This inventory provides signals, not a compliance score."])
+        lines.append("- 未检测到缺失的基础信号；仍需人工检查内容质量与一致性。")
+    lines.extend(["", "> 本画像只提供迁移线索，不是合规评分。"])
     return "\n".join(lines) + "\n"
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root to inspect.")
-    parser.add_argument("--format", choices=("json", "markdown"), default="markdown")
-    parser.add_argument("--max-files", type=int, default=DEFAULT_MAX_FILES)
+    parser.add_argument("--root", type=Path, default=Path.cwd(), help="要检查的仓库根目录，默认为当前目录。")
+    parser.add_argument("--format", choices=("json", "markdown"), default="markdown", help="输出格式，默认为 markdown。")
+    parser.add_argument("--max-files", type=int, default=DEFAULT_MAX_FILES, help="最多枚举的文件数。")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_utf8_stdio()
     args = parse_args(argv or sys.argv[1:])
     if args.max_files < 1:
-        print("--max-files must be positive", file=sys.stderr)
+        print("--max-files 必须是正整数", file=sys.stderr)
         return 2
     try:
         report = audit_project(args.root, args.max_files)

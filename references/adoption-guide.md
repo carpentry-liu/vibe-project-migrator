@@ -1,65 +1,39 @@
-# Adoption and acceptance guide
+# 对外介绍与接受度指南
 
-Use this guide when the migration includes README positioning, onboarding, a public repository, or stakeholder acceptance.
+当迁移包含 README 定位、贡献者入门、公开仓库或团队接受度时使用。
 
-## Why governance is necessary
+## 为什么需要治理
 
-Natural-language coding removes friction from implementation, but it also makes it easy to produce more change than reviewers can safely absorb. Chat history is temporary, model context is incomplete, and a confident answer is not test evidence. Repository-native governance converts implicit team knowledge into durable constraints and produces a trail that people can inspect without replaying an AI session.
+自然语言编程降低了实现成本，也可能让变更增长快于评审能力。聊天会消失、模型上下文不完整、信心不等于测试证据。仓库内治理把隐含知识变成持久边界，并让他人无需重放 AI 会话就能评审。
 
-The skill is valuable when it reduces these failure modes:
+它应减少的真实失败包括：反复猜架构和命令、不同工具规则冲突、设计藏在聊天里、大量生成差异却讲不清价值、敏感边界发现太晚、“测试通过”没有命令、维护者因来源和复核范围不明而拒绝 AI 产出。目标是采用让下一次改动更安全、更好评审的最小流程。
 
-- repeated rediscovery of architecture and commands;
-- conflicting instructions across tools or contributors;
-- design decisions hidden inside chat;
-- large generated diffs with unclear user value;
-- safety or external-write boundaries inferred too late;
-- “tests passed” claims without commands and results;
-- maintainers rejecting AI-assisted work because its provenance and review coverage are unclear.
+## README 叙事顺序
 
-The goal is not process for its own sake. Apply the smallest profile that makes the next change safer and easier to review.
+1. 问题：移除什么仓库痛点；
+2. 结果：迁移后出现哪些持久材料和行为；
+3. 安全：未经允许不会改变什么；
+4. 证据：审计输出、命令、测试和案例；
+5. 使用：一个安装路径和真实调用；
+6. 深度：层级、材料目录、架构和贡献细节。
 
-## README narrative
+读者采用工具是因为它减少风险或评审成本，而不是因为模板数量多。
 
-Lead in this order:
+## 可观察承诺
 
-1. **Problem**: what repository pain does the skill remove?
-2. **Outcome**: what durable artifacts and behaviors appear after migration?
-3. **Safety**: what the skill will not change without permission.
-4. **Proof**: audit output, validation commands, tests, and examples.
-5. **Usage**: one install path and one realistic invocation.
-6. **Depth**: profiles, artifact catalog, architecture, and contribution details.
+- **项目适配**：规则引用目标仓库的实际脚本和文档；
+- **行为保持**：治理迁移默认不改产品行为；
+- **可审查**：每份材料都有明确受众和权威性；
+- **成比例**：小项目不会被强迫建立大企业目录；
+- **透明**：AI 参与、人工复核、跳过检查和限制可见；
+- **可撤销**：改动是普通仓库文件，可通过提交评审或回滚。
 
-Avoid leading with an internal methodology name. Readers adopt a tool because it reduces risk or review time, not because it has many templates.
+## 迁移前后展示
 
-## Acceptance contract
+用紧凑对比而不是营销结论：命令从记忆进入贡献指南；有风险工作先记录范围/备选/回滚；PR 从“测试通过”升级为实际命令与结果；AI 从重复猜测改为路由到权威来源；评审者可见范围、AI 参与、人工复核和缺口。
 
-Make the following promises observable:
+## 渐进采用与指标
 
-- **Project-adapted**: generated rules cite the target repository's actual scripts and docs.
-- **Behavior-preserving**: governance migration does not modify product behavior by default.
-- **Reviewable**: every created artifact has a defined audience and authority.
-- **Proportional**: small repositories are not forced into a large-enterprise document tree.
-- **Transparent**: AI involvement, human review, skipped checks, and limitations remain visible.
-- **Reversible**: changes are ordinary repository files and can be reviewed or reverted by commit.
+先增加根 AI 入口、贡献命令和 PR 证据；有持续复杂工作后再加提案、Issue 表单和文档索引；只有不同子树确有差异再分层。
 
-## Before and after demonstration
-
-Use a compact comparison rather than a marketing claim:
-
-| Before | After |
-|---|---|
-| commands live in memory or chat | exact commands live in contributor and agent guidance |
-| non-trivial work begins directly in code | risk-bearing work records scope, alternatives, rollback, and acceptance |
-| PR says “tests passed” | PR shows the executed command and result |
-| every agent rebuilds context | root and subtree instructions route to authoritative sources |
-| reviewers distrust a large AI diff | scope, AI participation, human-reviewed areas, and gaps are explicit |
-
-## Progressive rollout
-
-Recommend three adoption steps:
-
-1. Start with a root AI entrypoint, contributor commands, and PR evidence.
-2. Add change proposals, issue forms, and a docs index when the project has recurring non-trivial work.
-3. Add nested instructions only after different subtrees demonstrate different needs.
-
-Useful success signals include shorter onboarding, fewer repeated context questions, smaller PRs, fewer review rounds caused by missing evidence, and fewer regressions from misunderstood safety boundaries. Do not invent metrics; establish a baseline before claiming improvement.
+可在建立基线后观察入门耗时、重复上下文问题、PR 大小、因证据缺失产生的评审轮次、误解安全边界导致的回归。禁止在没有基线和真实采集时声称指标改善。

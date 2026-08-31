@@ -1,34 +1,34 @@
-## User value
+## 用户价值
 
-<!-- What migration or review problem does this change solve? -->
+<!-- 这项改动解决什么迁移或评审问题？ -->
 
-## Scope
+## 范围
 
-- Included:
-- Not included:
+- 包含：
+- 不包含：
 
-## Safety and compatibility
+## 安全与兼容性
 
-- Does the audit remain read-only and avoid executing target content?
-- Does this add a universal rule based on one project? If so, why is it justified?
-- Rollback:
+- 审计是否仍为只读且不执行目标内容？
+- 是否把单个项目经验变成了通用规则？若是，依据是什么？
+- 回滚方式：
 
-## Verification evidence
+## 验证证据
 
-- Command:
-- Actual result:
-- Not run and why:
+- 命令：
+- 实际结果：
+- 未运行项及原因：
 
-## AI and human review
+## AI 与人工复核
 
-- AI involvement:
-- Human-reviewed scope:
-- Unverified areas:
+- AI 参与范围：
+- 人工复核范围：
+- 未验证区域：
 
-## Checklist
+## 检查清单
 
-- [ ] Skill description remains discriminating
-- [ ] New references are routed from `SKILL.md`
-- [ ] No private paths, identities, credentials, or source excerpts are included
-- [ ] Tests cover observable behavior rather than generated wording
-- [ ] Commit follows Conventional Commits
+- [ ] Skill 描述仍能准确触发，且不会吸引无关任务
+- [ ] 新增 reference 已从 `SKILL.md` 路由
+- [ ] 不包含私有路径、身份、凭据或源码片段
+- [ ] 测试覆盖可观察行为，而非只匹配生成文案
+- [ ] 提交遵循 Conventional Commits

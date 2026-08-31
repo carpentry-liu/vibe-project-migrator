@@ -17,7 +17,7 @@
 
 ![Vibe Project Migrator 真实只读审计结果](docs/assets/vibe-project-migrator-audit.png)
 
-<p align="center"><sub>真实使用截图：仓库内审计代码扫描一个临时示例工程，识别 221 个文件、4 类技术栈和 8 条迁移线索；目标工程写入为 0。可运行 <code>python docs/demo/render_usage_demo.py</code> 复现。</sub></p>
+<p align="center"><sub>真实使用截图：仓库内审计代码扫描一个临时示例工程，识别 221 个文件、4 类技术栈和 8 条迁移线索；审计前后文件 SHA-256 快照一致。可运行 <code>python docs/demo/render_usage_demo.py</code> 复现。</sub></p>
 
 ## 30 秒看懂
 
@@ -109,19 +109,19 @@ git clone https://github.com/carpentry-liu/vibe-project-migrator.git .agents\ski
 只做审计，不修改项目：
 
 ```text
-Use $vibe-project-migrator to audit this repository and recommend the smallest useful migration profile. Do not edit files.
+使用 $vibe-project-migrator 只读审计当前仓库，并推荐最小够用的迁移层级；不要修改任何文件。
 ```
 
 执行完整迁移：
 
 ```text
-Use $vibe-project-migrator to migrate this repository to an evidence-driven AI collaboration workflow. Preserve product behavior and existing conventions, verify the result, and show me the migration receipt.
+使用 $vibe-project-migrator 将当前仓库迁移为证据驱动的 AI 协作工程；保留产品行为和现有约定，验证结果并输出迁移回执。
 ```
 
 针对公开项目提升接受度：
 
 ```text
-Use $vibe-project-migrator to improve this repository's AI governance, contributor onboarding, and README trust narrative without changing application behavior.
+使用 $vibe-project-migrator 改善当前公开仓库的 AI 协作治理、贡献者上手体验和 README 信任说明，不要改变应用行为。
 ```
 
 ## 独立审计脚本
@@ -133,7 +133,7 @@ python scripts\audit_project.py --root D:\path\to\repository --format markdown
 python scripts\audit_project.py --root D:\path\to\repository --format json
 ```
 
-输出是迁移线索而不是合规评分。脚本不会读取文件内容，不跟随符号链接，并跳过 `.git`、`node_modules`、`target`、`build`、`vendor` 等常见大型目录。
+输出是迁移线索而不是合规评分。脚本不会读取文件内容，不跟随符号链接，并跳过 `.git`、`node_modules`、`target`、`build`、`vendor` 等常见大型目录。命令行入口会主动把标准输出和标准错误配置为 UTF-8，因此在 Windows 默认 GBK 终端下运行也不依赖 `PYTHONIOENCODING` 等外部环境变量。
 
 ## 迁移前后
 
@@ -145,12 +145,33 @@ python scripts\audit_project.py --root D:\path\to\repository --format json
 | 每个 AI 重新建立上下文 | 根级与子树规则路由到同一组权威事实 |
 | 维护者难以判断 AI 产出可信度 | AI 参与、人工复核范围和限制保持透明 |
 
+## 可复现实际案例
+
+仓库内置了一个合成的 Python CLI fixture。它不是“某团队使用后效率提升”的宣传案例，而是一组可以逐文件检查、重复运行、确认产品代码未变的迁移前后材料：
+
+```powershell
+python scripts\compare_fixture.py --format markdown
+```
+
+当前 fixture 的可观察结果如下，数字由测试在每次运行时重新计算：
+
+| 指标 | 迁移前 | 迁移后 |
+|---|---:|---:|
+| 已枚举文件 | 3 | 11 |
+| 已有路径信号组 | 0 / 8 | 8 / 8 |
+| 待确认迁移项 | 8 | 0 |
+| 审计前后 SHA-256 快照一致 | 是 | 是 |
+
+这些变化只证明 [`examples/python-cli-migration`](examples/python-cli-migration) 存在脚本可检测的协作入口路径；审计不读取这些文件的内容，因此不验证内容质量。对比命令会在审计前后分别读取这个合成 fixture，列出每个相对路径及其 SHA-256，用可复核快照证明审计期间没有写入。**这些指标不是合规评分，也不代表真实团队效率或质量成效**。`before/` 与 `after/` 的产品代码和测试完全相同，新增内容仅为协作材料。
+
 ## 仓库结构
 
 ```text
 SKILL.md                         技能入口与执行边界
 agents/openai.yaml              Codex 展示与默认调用信息
 scripts/audit_project.py        只读仓库审计
+scripts/compare_fixture.py      可复现迁移前后量化对比
+examples/python-cli-migration/  合成的迁移前后案例
 references/migration-playbook.md 迁移决策流程
 references/artifact-blueprints.md 协作材料内容契约
 references/adoption-guide.md    对外介绍与接受度指南
@@ -162,6 +183,7 @@ tests/                          审计脚本行为测试
 ```powershell
 python -m unittest discover -s tests -v
 python scripts\audit_project.py --root . --format json
+python scripts\compare_fixture.py --format markdown
 ```
 
 技能结构使用 Codex `skill-creator` 的 `quick_validate.py` 校验。

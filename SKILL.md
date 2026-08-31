@@ -3,70 +3,68 @@ name: vibe-project-migrator
 description: 审计现有软件仓库，并迁移为适配项目、证据驱动的 AI 协作工程，补齐 AGENTS.md、权威文档、风险分级变更记录、审查模板和验证回执；适用于引入或规范 Vibe Coding 与 AI 治理，不用于不改变协作方式的普通功能开发。
 ---
 
-# Vibe Project Migrator
+# Vibe 项目迁移助手
 
-Turn a repository's implicit habits into durable project context and reviewable evidence. Preserve the project's product behavior, technology choices, terminology, and existing governance unless the user explicitly requests broader changes.
+把仓库中隐含的协作习惯变成持久的项目上下文和可审查证据。除非用户明确要求扩大范围，否则保留项目的产品行为、技术选择、术语和现有治理方式。
 
-## Non-negotiable boundaries
+## 不可突破的边界
 
-- Adapt the model to the target repository; do not copy another project's names, commands, people, internal URLs, product rules, or technology-specific constraints.
-- Inspect before editing. Preserve unrelated work and update existing authoritative files instead of creating a competing documentation system.
-- Do not change product code, dependencies, repository settings, branch protections, visibility, remotes, or external systems unless the user separately authorizes those changes.
-- Treat destructive operations, credentials, private source material, regulated data, and external writes as explicit authorization boundaries.
-- Report actual evidence. Never describe a planned, skipped, partial, or failed check as passed.
+- 让迁移适配目标仓库，不复制其他项目的名称、命令、人员、内部网址、产品规则或技术限制。
+- 先检查再编辑。保留无关改动，优先更新已有权威文件，避免建立互相竞争的文档体系。
+- 未获单独授权时，不修改产品代码、依赖、仓库设置、分支保护、可见性、远程地址或外部系统。
+- 删除、凭据、私有源码、受监管数据和外部写操作都需要明确授权。
+- 只报告真实证据。计划执行、跳过、部分完成或失败的检查都不能写成“已通过”。
 
-## Workflow
+## 工作流程
 
-### 1. Audit the repository
+### 1. 只读审计
 
-Read the root and nearest applicable instruction files, Git status, README, contribution and security policies, build manifests, CI, docs index, templates, and validation commands. Run the bundled read-only inventory when Python is available:
+依次读取根目录及最近层级的规则文件、Git 状态、README、贡献和安全政策、构建清单、CI、文档索引、模板与验证命令。Python 可用时运行技能自带的只读画像：
 
 ```text
 python <skill-directory>/scripts/audit_project.py --root <repository> --format json
 ```
 
-The inventory produces signals, not a compliance score. Confirm its findings against the actual files before making decisions.
+画像只提供信号，不是合规评分。做决定前需要回到仓库事实确认发现。
 
-### 2. Select the smallest useful migration profile
+### 2. 选择最小够用的迁移层级
 
-Read [references/migration-playbook.md](references/migration-playbook.md) before planning or applying a migration.
+规划或执行迁移前阅读 [references/migration-playbook.md](references/migration-playbook.md)。
 
-- **Baseline**: a small or early project that needs one durable AI entrypoint, contributor rules, review evidence, and clear validation commands.
-- **Standard**: an active product repository that also benefits from a docs index, risk-tiered change proposal, issue forms, security reporting, and decision traceability.
-- **Layered**: a monorepo or multi-domain system whose subtrees genuinely need narrower `AGENTS.md` files or specialized rules.
+- **Baseline（基础）**：小型或早期项目，只需稳定 AI 入口、贡献规则、评审证据和明确验证命令。
+- **Standard（标准）**：活跃产品，可按需增加文档索引、风险分级提案、Issue 表单、安全报告和决策追踪。
+- **Layered（分层）**：monorepo 或多领域项目，仅在子树确有不同命令、边界、生成规则或安全要求时增加最近层级 `AGENTS.md`。
 
-Risk can raise the required evidence without forcing a larger file hierarchy. A small tool that deletes data may need stricter safety and rollback guidance than a large documentation site.
+风险可以提高证据要求，不必强迫项目增加文件层级。例如会删除数据的小工具，可能只需少量 Baseline 文件，但仍需要严格回滚证据。
 
-### 3. Design the target state
+### 3. 设计目标状态
 
-Before authoring governance artifacts, read [references/artifact-blueprints.md](references/artifact-blueprints.md). Produce a path-level plan showing:
+编写治理材料前阅读 [references/artifact-blueprints.md](references/artifact-blueprints.md)，然后给出逐路径方案，说明：
 
-- which existing files will be updated;
-- which missing files will be added;
-- which suggested artifacts are intentionally omitted and why;
-- how project-specific build, test, security, release, and Git rules were derived;
-- what remains a human decision.
+- 更新哪些现有文件；
+- 新增哪些缺失文件；
+- 哪些建议材料不采用以及原因；
+- 项目专属的构建、测试、安全、发布和 Git 规则从哪里得出；
+- 哪些事项仍需人类决定。
 
-For a diagnose, audit, or recommendation request, stop after the report. Only edit when the user asked to migrate or change the project.
+若用户只要求诊断、审计或建议，到报告为止；只有明确要求迁移或修改时才编辑。
 
-### 4. Apply the migration
+### 4. 实施迁移
 
-- Keep stable project facts and decision-changing rules in the AI entrypoint; keep detailed or conditional material in linked docs.
-- Separate intent, design, implementation, and verification for non-trivial changes, while allowing trivial work to stay lightweight.
-- Use the repository's language and existing conventions. Infer validation commands from checked-in configuration, not generic ecosystem memory.
-- Preserve existing commit conventions when they are coherent. Otherwise recommend standard Conventional Commits without rewriting history.
-- Make documentation paths and templates internally consistent. Do not leave scaffold placeholders in delivered files.
+- AI 入口只放稳定事实和会改变决策的规则；详细或条件性内容放到链接文档。
+- 非平凡改动区分意图、设计、实现与验证；琐碎改动保持轻量。
+- 使用目标仓库的语言和约定；从已提交配置推导验证命令，不能只凭生态经验猜测。
+- 保留有效的提交约定；若没有一致约定，可建议 Conventional Commits，但不改写历史。
+- 所有路径和模板保持一致，不交付脚手架占位符。
 
-If the task includes README positioning, onboarding, public release, or stakeholder acceptance, read [references/adoption-guide.md](references/adoption-guide.md) before editing those materials.
+任务涉及 README 定位、入门、公开发布或团队接受度时，编辑前阅读 [references/adoption-guide.md](references/adoption-guide.md)。
 
-### 5. Verify and hand off
+### 5. 验证与移交
 
-Rerun the inventory and perform proportional checks:
+- 检查本地 Markdown 链接和引用路径；
+- 使用可用的原生解析器验证结构化配置；
+- 运行与改动相关的格式、检查、测试、构建和冒烟命令；
+- 检查差异中是否有凭据、私有路径、内部身份、复制来的项目规则、占位符或无关改动；
+- 运行 `git diff --check` 并确认最终 Git 状态。
 
-- resolve local Markdown links and referenced paths;
-- parse structured configuration with an available native parser;
-- run the repository's documented formatting, lint, test, build, and smoke checks that are relevant to the changed files;
-- inspect staged changes for secrets, private paths, internal identities, copied project-specific policy, unfinished placeholders, and unrelated edits;
-- use `git diff --check` and confirm the final Git status.
-
-Return a migration receipt with the chosen profile, files changed, important adaptation decisions, omitted artifacts, commands and results, limitations, and any human review still required. Do not commit, push, publish, or change repository settings unless explicitly authorized.
+最后给出迁移回执：采用的层级、变更文件、关键适配决策、明确省略项、命令与实际结果、限制及仍需人工复核的内容。未获明确授权时，不提交、不推送、不发布，也不改变仓库设置。

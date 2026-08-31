@@ -1,101 +1,35 @@
-# Artifact blueprints
+# 协作材料内容契约
 
-Use these as content contracts, not files to copy verbatim. Adapt headings, language, filenames, and depth to the target repository.
+这些是内容契约，不是逐字复制的模板。应按目标仓库调整标题、语言、文件名和深度。
 
-## AI entrypoint
+## AI 入口
 
-A useful root `AGENTS.md` or equivalent normally answers:
+根级 `AGENTS.md` 或等价物通常回答：规则适用范围与优先级、产品不可削弱行为、主要职责位置、权威文档、提案/人工复核条件、验证来源、Git/发布/外部写授权边界。避免通用编程建议、穷举模块、重复构建参数、愿景口号、个人偏好或易变人员信息。
 
-1. Where does this rule apply, and what takes precedence?
-2. What does the product do, and which behaviors must never be weakened silently?
-3. Where do major responsibilities live?
-4. Which existing docs are authoritative for architecture, product, security, and operations?
-5. Which work is trivial, and which work requires a proposal or human review?
-6. Which exact commands or checked-in scripts prove a change?
-7. Which Git, deployment, publication, and external-write actions require explicit authorization?
+## AI 协作指南
 
-Avoid generic coding advice, exhaustive module inventories, duplicated build flags, aspirational claims, personal preferences, or volatile ownership data.
+说明采用 AI 的原因，人类、AI、评审者和用户的职责，风险分级，上下文获取顺序，研究/设计/实现/验证证据，偏差记录和完成定义。明确禁止伪造测试、静默扩张范围、泄露凭据或让 AI 自行批准高风险工作。AI 代码应和人类代码接受同样的可观察证据评审。
 
-## AI collaboration guide
+## 变更提案
 
-Recommended content:
+有风险的工作应包含：用户问题、目标与可观察验收标准；范围和非目标；存在真实选择时的备选；选定方案及接口影响；适用的安全/隐私/持久化/兼容/性能/运维影响；风险与可执行回滚；可独立评审或撤销的实现切片；验证命令和实际结果；决策与实现偏差；AI 参与、人工评审和未覆盖区域。琐碎改动不要被迫填写不相关栏目。
 
-- why the project uses AI assistance;
-- human, AI, reviewer, and user responsibilities;
-- the project's change-risk tiers;
-- context acquisition order;
-- research, design, implementation, and verification evidence;
-- how deviations and new risks are recorded;
-- the definition of done;
-- prohibited behaviors such as fabricated tests, silent scope expansion, credential disclosure, and self-approval of high-risk work.
+## 贡献指南
 
-State that AI code is judged by the same observable evidence as human code. Do not require disclosure that has no review value; ask for the areas AI touched, the human-reviewed scope, and unverified areas.
+根据清单或 CI 写出真实工具链及安装、格式、检查、测试、构建、冒烟和发布命令；说明必须保留的数据/安全规则、现有分支和提交约定、何时同步文档/架构/翻译/fixture/生成文件、PR 证据和安全报告渠道。不要写未验证或绑定个人电脑的命令。
 
-## Change proposal
+## Pull Request 模板
 
-For risk-bearing work, include:
+要求用户价值、范围和非目标、变化摘要、适用的安全/数据/兼容/回滚影响、实际执行命令及结果、未执行检查及原因、视觉证据、AI 参与与人工复核范围。未来时态的“将运行测试”不是证据。
 
-- user problem, goal, and observable acceptance criteria;
-- scope and non-goals;
-- at least two realistic alternatives when a real choice exists;
-- selected approach and affected modules or interfaces;
-- security, privacy, persistence, compatibility, performance, and operations impact as applicable;
-- risks, mitigations, and executable rollback boundary;
-- implementation slices that can be reviewed or reverted independently;
-- verification matrix with commands or steps and actual results;
-- decision log and implementation deviations;
-- AI participation, human reviewer, and uncovered areas.
+## Issue 表单
 
-Do not force irrelevant categories into trivial changes. “Not applicable” is useful only when it closes a plausible risk.
+缺陷表单收集影响、最小复现、环境/版本、预期和实际结果及脱敏日志；功能表单先问用户问题和验收标准，再问范围、安全/数据影响和备选。漏洞必须指向可用的私密渠道。
 
-## Contribution guide
+## 文档索引
 
-Keep onboarding executable:
+按读者意图组织用户/运维、架构/设计、安全/数据、开发/测试、AI 协作/变更记录，并标明不同决策类型的权威来源，避免 README、代码和 AI 入口相互竞争。
 
-- supported toolchain derived from manifests or CI;
-- install, format, lint, test, build, smoke, and release commands as applicable;
-- safety or data rules contributors must preserve;
-- branch and commit convention based on current history;
-- when docs, changelog, architecture, translations, fixtures, snapshots, or generated files must change;
-- PR evidence and review expectations;
-- security reporting path.
+## 嵌套规则
 
-Avoid undocumented machine-specific paths and commands that were not verified.
-
-## Pull request template
-
-Ask for:
-
-- user value;
-- included scope and non-goals;
-- change summary;
-- security, data, compatibility, and rollback impact where relevant;
-- commands or steps actually executed and their results;
-- explicitly unexecuted checks and reasons;
-- screenshots or other visual evidence when behavior is visual;
-- AI involvement, human-reviewed scope, and unverified areas;
-- a short completion checklist for secrets, docs, tests, and commit quality.
-
-Do not use empty future-tense test checklists as evidence.
-
-## Issue forms
-
-Defect intake should request impact, minimal reproduction, environment or version, expected and actual results, and redacted logs. Feature intake should start with the user problem and acceptance criteria, then scope, safety/data impact, and alternatives.
-
-Provide a private security-reporting route when the repository can actually receive it. Never direct vulnerability details into a public issue.
-
-## Docs index
-
-Group links by reader intent rather than mirroring directories:
-
-- users and operators;
-- architecture and design;
-- security and data handling;
-- development and testing;
-- AI collaboration and change records.
-
-Identify the authoritative source for each decision class so that code, README, and agent entrypoints do not compete.
-
-## Nested instructions
-
-Add a subtree instruction file only when local work differs materially in build commands, generated-file policy, architecture boundary, language style, safety, or ownership. Link to the parent and record differences rather than duplicating the root.
+只有子树的构建命令、生成文件、架构边界、语言风格、安全或所有权确有不同才添加。链接父级并只记录差异。
